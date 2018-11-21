@@ -1,28 +1,52 @@
 import re, os
 
 def preprocess(topDir, outputFilename):
-	outputBuffer = []
-	for filename in os.listdir(topDir):
-		with open(topDir+os.sep+filename, 'r', encoding='UTF-8') as fin:
-			for line in fin:
-				line = line.strip().replace(' ', '')
-				line = line.replace('（', '')
-				line = line.replace('）', '')
-				line = line.replace('“', '')
-				line = line.replace('”', '')
-				line = line.replace('‘', '')
-				line = line.replace('’', '')
-				line = line.replace('!', '！')
-				line = line.replace('?', '？')
-				line = line.replace('[', '【')
-				line = line.replace(']', '】')
-				line = re.sub(r'\(.*\)', '', line)
-				lines = line.split('　　')
-				for candidate in lines:
-					if candidate != '':
-						outputBuffer.append(candidate.replace('　', ''))
-	with open(outputFilename, 'w', encoding='UTF-8') as fout:
-		fout.write('\n'.join(outputBuffer) + '\n')
+    outputBuffer = []
+    count = 0
+    for filename in os.listdir(topDir):
+        if count < 200:
+            count += 1
+            continue
+        with open(topDir+os.sep+filename, 'r', encoding='UTF-8') as fin:
+            for line in fin:
+                line = line.strip().replace(' ', '')
+                line = line.replace('（', '')
+                line = line.replace('）', '')
+                line = line.replace('(', '')
+                line = line.replace(')', '')
+                line = line.replace('“', '')
+                line = line.replace('”', '')
+                line = line.replace('"', '')
+                line = line.replace('‘', '')
+                line = line.replace('’', '')
+                line = line.replace('!', '！')
+                line = line.replace('?', '？')
+                line = line.replace('[', '【')
+                line = line.replace(']', '】')
+                line = line.replace('［', '【')
+                line = line.replace('］', '】')
+                line = line.replace('「', '')
+                line = line.replace('」', '')
+                line = line.replace('〔', '')
+                line = line.replace('〕', '')
+                line = line.replace('《', '')
+                line = line.replace('》', '')
+                line = line.replace('『', '')
+                line = line.replace('』', '')
+                line = line.replace('∶', '：')
+                #line = line.replace('\n', '')
+                line = line.replace('……', '')
+                line = line.replace('．', '。')
+                line = re.sub(r'\(.*\)', '', line)
+                lines = line.split('　　')
+                for candidate in lines:
+                    if candidate != '':
+                        outputBuffer.append(candidate.replace('　', ''))
+            count += 1
+            #if count == 200:
+                #break
+    with open(outputFilename, 'w', encoding='UTF-8') as fout:
+        fout.write('\n'.join(outputBuffer) + '\n')
 
 def isPunctuation(c):
 	return c in {'，', '。', '！', '？', '：', '；', '、', '/'}
@@ -84,7 +108,12 @@ def convertToCrfFormat(inputFilename, outputFilename):
 	print('Total token count =', totalTokenCount)
 	
 if __name__ == '__main__':
+#    preprocess('data', 'train.all')
 # 	preprocess('data', 'preprocessed.all')
-	removePunctuation('preprocessed.all', 'punctuationRemoved.all')
+#	removePunctuation('preprocessed.all', 'punctuationRemoved.all')
 # 	preprocess('corrupted_data', 'preprocessed.1')
 # 	convertToCrfFormat('preprocessed.1', 'data.1')
+    #preprocess('data', 'train.all')
+    #convertToCrfFormat('train.all', 'train_crf.all')
+    #convertToCrfFormat('valid.all', 'valid_crf.all')
+    #convertToCrfFormat('test.all', 'test_crf.all')
